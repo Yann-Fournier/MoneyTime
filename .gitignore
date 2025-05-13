@@ -1,0 +1,9 @@
+.idea
+.DS_Store
+*.iml
+*.log
+*.pyc
+__pycache__/
+*.egg-info/
+*.egg
+*.pdb
