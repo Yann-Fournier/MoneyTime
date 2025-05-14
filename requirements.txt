@@ -5,3 +5,5 @@ matplotlib==3.10.3
 tensorflow==2.19.0
 tqdm==4.67.1
 ccxt==4.4.80
+ta==0.11.0
+mplfinance==0.12
