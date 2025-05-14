@@ -40,7 +40,15 @@ def moyenne_mobile(df): # On ajoute les colonnes, correspondants à l'indicateur
 
 
 # Graphiques ------------------------------------------------------------------------------------------------------
-
+def simple_plot(df, val): # création d'un graphique simple (que la valeur)
+    df_plot = df.copy().iloc[-150:] # on prend les 150 dernières valeurs du dataset.
+    s = mpf.make_mpf_style(base_mpf_style='charles', rc={'font.size': 6}) # on indique le style du graphique
+    fig = mpf.figure(2, figsize=(20, 15), style=s) # création de la figure
+    ax1 = fig.add_subplot(2,1,1, title=val) # ajout d'un graphique
+    mpf.plot(df_plot, type='candle', ax=ax1) # ajout des données dans le graphique
+    ax1.yaxis.set_label_position('left')  # positionnement du label des ordonnées à gauche (style)
+    ax1.yaxis.tick_left() # positionnement de l'axe des ordonnées à gauche (style)
+    
 def plot_rsi(df, val):
     df_plot = df.copy().iloc[-150:] # on prend les 150 dernières valeurs du dataset.
     s = mpf.make_mpf_style(base_mpf_style='charles', rc={'font.size': 6}) # on indique le style du graphique
