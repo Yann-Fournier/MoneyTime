@@ -10,10 +10,10 @@ Python >= 3.10, Git
 
 Téléchargement initial du projet
 ```bash
-$ git clone https://github.com/CryptoRobotFr/Backtest-Tools-V2.git  
+$ git clone https://github.com/Yann-Fournier/MoneyTime
 ```
 
-Placer ensuite le terminal à l'intérieur du dossier Backtest-Tools-V2  
+Placer ensuite le terminal à l'intérieur du dossier MoneyTime 
 
 Mise en place de l'environnement virtuel (très recommandé):
 ```bash
