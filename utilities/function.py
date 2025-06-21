@@ -1,9 +1,10 @@
 import matplotlib.pyplot as plt
 import mplfinance as mpf
 import ta
+import numpy as np
+
 
 # Indicateurs techniques ------------------------------------------------------------------------------------------------------
-
 def rsi(df): # On ajoute les colonnes, correspondants à l'indicateur, dans le dataframe pandas
     df["rsi"] = ta.momentum.rsi(df['close'], 14) # rsi avec une periode de 14 unitées de temps
     df['rsima'] = df['rsi'].rolling(14).mean() # une moyenne des 14 dernières unitées de temps
@@ -126,3 +127,21 @@ def plot_moyenne_mobile(df, val):
     ax1.yaxis.set_label_position('left') # positionnement du label des ordonnées à gauche (style)
     ax1.yaxis.tick_left() # positionnement de l'axe des ordonnées à gauche (style)
     
+
+# Add indicators to dataframe ------------------------------------------------------------------------------------------------------
+def add_indicators(df):
+    df = rsi(df) # ajout de l'indicateur RSI
+    df = macd(df) # ajout de l'indicateur MACD
+    df = stochastique(df) # ajout de l'indicateur Stochastique
+    df = bollinger_bands(df) # ajout des bandes de Bollinger
+    df = moyenne_mobile(df) # ajout des moyennes mobiles
+    df['Avg_day'] = ((df['close'] + df['open'] + df['high'] + df['low']) / 4).round(2) # calcul de la moyenne du prix de la bougie (open, close, high, low)
+    df['Avg_corps'] = ((df['close'] + df['open']) / 2).round(2) # calcul de la moyenne du prix du corps de la bougie (open, close)
+    df['Avg_meches'] = ((df['high'] + df['low']) / 2).round(2) # calcul de la moyenne du prix des mèches de la bougie (high, low)
+    df['Pourc_Price_Evol_14d'] = ((100 * df['Avg_day'].shift(-14) / df['Avg_day']) - 100).round(2) # calcul de l'évolution du prix sur 14 jours en pourcentage
+    df['Label'] = np.where(df['Pourc_Price_Evol_14d'] > 5, 1,np.where(df['Pourc_Price_Evol_14d'] < -5, -1, 0)) # création de la colonne Label qui indique si le prix a augmenté de plus de 5% (1), diminué de plus de 5% (-1) ou est resté stable (0)
+    df = df.dropna() # suppression des lignes avec des valeurs manquantes
+    #df = df.reset_index() # réinitialisation de l'index du dataframe
+    return df
+
+
