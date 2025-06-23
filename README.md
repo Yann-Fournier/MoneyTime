@@ -28,7 +28,11 @@ $ pip install -r .\requirements.txt
 - Exécuter le script *utilities/Get_data.ipynb* pour télécharger l'historique des crypto-monnaies depuis Binance.
 - Exécuter le script *utilities/Ajout_ind_bdd.ipynb* pour ajouter les indicateurs et les métriques utiles pour entrainer l'IA.
 
+## NN
 
+Neural Profet de FaceBook
+
+LSTM + de l'attention + Convolution
 
 
 
