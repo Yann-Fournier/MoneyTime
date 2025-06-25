@@ -221,7 +221,7 @@ def plot_moyenne_mobile(df: pd.DataFrame, val: str) -> None:
     
 
 # Add indicators to dataframe ------------------------------------------------------------------------------------------------------
-def add_indicators(df: pd.DataFrame) -> pd.DataFrame:
+def add_indicators(df: pd.DataFrame, tf: str) -> pd.DataFrame:
     """
     Fonction pour ajouter des indicateurs techniques au dataframe.
 
@@ -231,18 +231,51 @@ def add_indicators(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pd.Dataframe: retourne le dataframe avec les indicateurs techniques ajoutés.
     """
+    print(tf)
+    # Ajout des indicateurs techniques au dataframe
     df = rsi(df) # ajout de l'indicateur RSI
     df = macd(df) # ajout de l'indicateur MACD
     df = stochastique(df) # ajout de l'indicateur Stochastique
     df = bollinger_bands(df) # ajout des bandes de Bollinger
     df = moyenne_mobile(df) # ajout des moyennes mobiles
+    
     df['Avg_day'] = ((df['close'] + df['open'] + df['high'] + df['low']) / 4).round(2) # calcul de la moyenne du prix de la bougie (open, close, high, low)
     df['Avg_corps'] = ((df['close'] + df['open']) / 2).round(2) # calcul de la moyenne du prix du corps de la bougie (open, close)
     df['Avg_meches'] = ((df['high'] + df['low']) / 2).round(2) # calcul de la moyenne du prix des mèches de la bougie (high, low)
-    df['Pourc_Price_Evol_14d'] = ((100 * df['Avg_day'].shift(-14) / df['Avg_day']) - 100).round(2) # calcul de l'évolution du prix sur 14 jours en pourcentage
-    df['Label'] = np.where(df['Pourc_Price_Evol_14d'] > 5, 1,np.where(df['Pourc_Price_Evol_14d'] < -5, -1, 0)) # création de la colonne Label qui indique si le prix a augmenté de plus de 5% (1), diminué de plus de 5% (-1) ou est resté stable (0)
+    
+    # Ajout du label pour la classification des variations de prix
+    if tf == '1h':
+        df['Pourc_Price_Evol_CT'] = ((100 * df['Avg_day'].shift(-24) / df['Avg_day']) - 100).round(2) # calcul de l'évolution du prix sur 14 jours en pourcentage
+        df['Label_CT'] = np.where(df['Pourc_Price_Evol_CT'] > 5, 1,np.where(df['Pourc_Price_Evol_CT'] < -5, -1, 0)) # création de la colonne Label qui indique si le prix a augmenté de plus de 5% (1), diminué de plus de 5% (-1) ou est resté stable (0)
+    elif tf == '2h':
+        df['Pourc_Price_Evol_CT'] = ((100 * df['Avg_day'].shift(-12) / df['Avg_day']) - 100).round(2) # calcul de l'évolution du prix sur 14 jours en pourcentage
+        df['Label_CT'] = np.where(df['Pourc_Price_Evol_CT'] > 5, 1,np.where(df['Pourc_Price_Evol_CT'] < -5, -1, 0)) # création de la colonne Label qui indique si le prix a augmenté de plus de 5% (1), diminué de plus de 5% (-1) ou est resté stable (0)
+    elif tf == '4h':
+        df['Pourc_Price_Evol_CT'] = ((100 * df['Avg_day'].shift(-6) / df['Avg_day']) - 100).round(2) # calcul de l'évolution du prix sur 14 jours en pourcentage
+        df['Label_CT'] = np.where(df['Pourc_Price_Evol_CT'] > 5, 1,np.where(df['Pourc_Price_Evol_CT'] < -5, -1, 0)) # création de la colonne Label qui indique si le prix a augmenté de plus de 5% (1), diminué de plus de 5% (-1) ou est resté stable (0)
+    elif tf == '12h':
+        df['Pourc_Price_Evol_MT'] = ((100 * df['Avg_day'].shift(-35) / df['Avg_day']) - 100).round(2) # calcul de l'évolution du prix sur 14 jours en pourcentage
+        df['Label_MT'] = np.where(df['Pourc_Price_Evol_MT'] > 5, 1,np.where(df['Pourc_Price_Evol_MT'] < -5, -1, 0)) # création de la colonne Label qui indique si le prix a augmenté de plus de 5% (1), diminué de plus de 5% (-1) ou est resté stable (0)
+    elif tf == '1d':
+        df['Pourc_Price_Evol_MT'] = ((100 * df['Avg_day'].shift(-42) / df['Avg_day']) - 100).round(2) # calcul de l'évolution du prix sur 14 jours en pourcentage
+        df['Label_MT'] = np.where(df['Pourc_Price_Evol_MT'] > 5, 1,np.where(df['Pourc_Price_Evol_MT'] < -5, -1, 0)) # création de la colonne Label qui indique si le prix a augmenté de plus de 5% (1), diminué de plus de 5% (-1) ou est resté stable (0)
+
+        df['Pourc_Price_Evol_LT'] = ((100 * df['Avg_day'].shift(-90) / df['Avg_day']) - 100).round(2) # calcul de l'évolution du prix sur 14 jours en pourcentage
+        df['Label_LT'] = np.where(df['Pourc_Price_Evol_LT'] > 5, 1,np.where(df['Pourc_Price_Evol_LT'] < -5, -1, 0)) # création de la colonne Label qui indique si le prix a augmenté de plus de 5% (1), diminué de plus de 5% (-1) ou est resté stable (0)
+    elif tf == '1w':
+        df['Pourc_Price_Evol_MT'] = ((100 * df['Avg_day'].shift(-3) / df['Avg_day']) - 100).round(2) # calcul de l'évolution du prix sur 14 jours en pourcentage
+        df['Label_MT'] = np.where(df['Pourc_Price_Evol_MT'] > 5, 1,np.where(df['Pourc_Price_Evol_MT'] < -5, -1, 0)) # création de la colonne Label qui indique si le prix a augmenté de plus de 5% (1), diminué de plus de 5% (-1) ou est resté stable (0)
+        
+        df['Pourc_Price_Evol_LT'] = ((100 * df['Avg_day'].shift(-12) / df['Avg_day']) - 100).round(2) # calcul de l'évolution du prix sur 14 jours en pourcentage
+        df['Label_LT'] = np.where(df['Pourc_Price_Evol_LT'] > 5, 1,np.where(df['Pourc_Price_Evol_LT'] < -5, -1, 0)) # création de la colonne Label qui indique si le prix a augmenté de plus de 5% (1), diminué de plus de 5% (-1) ou est resté stable (0)
+    elif tf == '1M':
+        df['Pourc_Price_Evol_LT'] = ((100 * df['Avg_day'].shift(-3) / df['Avg_day']) - 100).round(2) # calcul de l'évolution du prix sur 14 jours en pourcentage
+        df['Label_LT'] = np.where(df['Pourc_Price_Evol_LT'] > 5, 1,np.where(df['Pourc_Price_Evol_LT'] < -5, -1, 0)) # création de la colonne Label qui indique si le prix a augmenté de plus de 5% (1), diminué de plus de 5% (-1) ou est resté stable (0)
+    
+    # Suppression des lignes avec des valeurs manquantes
     df = df.dropna() # suppression des lignes avec des valeurs manquantes
     #df = df.reset_index() # réinitialisation de l'index du dataframe
+    
     return df
 
 
